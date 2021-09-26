@@ -93,7 +93,7 @@ res.json({authToken})
 
 
 //Route 3: Get Loggedin User Detail: POST "/api/auth/getuser". login Required.
-router.post('/getuser', fetchuser, async(req, res) => {
+router.post('/getuser', fetchuser, async(req, res) => {//with the help of fetch user now we get the user in our req.
 try {
   userId = req.user.id
   const user = await User.findById(userId).select("-password")

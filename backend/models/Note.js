@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const { Schema } = mongoose;
 
 
 const NotesSchema = new Schema({
@@ -21,3 +22,4 @@ const NotesSchema = new Schema({
   });
 
   module.exports = mongoose.model('notes', NotesSchema);
+  //notes = database
