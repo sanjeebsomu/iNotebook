@@ -65,7 +65,7 @@ router.put('/updatenote/:id', fetchuser, [
     let note =await Note.findById(req.params.id);
     //if note with this(tampered?) id does not exist/this steps is for keeping this app secure from the attacker. if someone
     if(!note){return res.status(404).send("Not Found")}
-    //if this notes user ka id is same with req.user.id(this gives error for some strange reason, so will not adding this funvtionality for now)
+    //if this notes user ka id is same with req.user.id(this gives error for some strange reason, so will not adding this functionality for now)
     // if(note.user.toString() !== req.user.id){
     //     return res.status(401).send("Not Allowed")
     // }
