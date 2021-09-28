@@ -41,7 +41,7 @@ router.post('/addnote',fetchuser, [
 
 
 
-//Route 3: Update an Existing Note: GET "/api/notes/updatenote". login Required.
+//Route 3: Update an Existing Note: PUT "/api/notes/updatenote". login Required.
 router.put('/updatenote/:id', fetchuser, [
     body('title', 'Title must be of atleast 3 charecters').isLength({ min: 3 }),
     body('description', 'description must be of atleast 5 charecters').isLength({ min: 5 })
@@ -63,19 +63,39 @@ router.put('/updatenote/:id', fetchuser, [
 
     //find the note(id) to be updated
     let note =await Note.findById(req.params.id);
-    //if note with this(tampered?) id does not exist/this steps is for keeping this app secure from the attacker. if someone
+    //if (note with this)tampered id does not exist/this steps is for keeping this app secure from the attacker. if someone
     if(!note){return res.status(404).send("Not Found")}
-    //if this notes user ka id is same with req.user.id(this gives error for some strange reason, so will not adding this functionality for now)
-    // if(note.user.toString() !== req.user.id){
-    //     return res.status(401).send("Not Allowed")
-    // }
-    //agar sab kuchh shi rha toh
+    // if this notes user ka id is same with req.user.id(this gives error for some strange reason, so will not adding this functionality for now)
+    if(note.user.toString() !== req.user.id){
+        return res.status(401).send("Not Allowed")
+    }
+    // agar sab kuchh shi rha toh
     note = await Note.findByIdAndUpdate(req.params.id, {$set:newNote}, {new:true})
     res.json(note)
             
 } catch (error) {
     console.error(error.message)
     res.status(500).send("Internal Server Error")//it will display inside response    
+}
+})
+
+//Route 3: Delete an Existing Note: DELETE "/api/notes/updatenote". login Required.
+router.delete('/deletenote/:id', fetchuser, async (req, res)=> {
+    try {
+    //find the note(id) to be deleted
+    let note =await Note.findById(req.params.id);
+    //if note with this(tampered?) id does not exist/this steps is for keeping this app secure from the attacker
+    if(!note){return res.status(404).send("Not Found")}
+    //allow deletion only if user owns this note
+    if(note.user.toString() !== req.user.id){
+        return res.status(401).send("Not Allowed")
+    }
+    //deleting
+    note = await Note.findByIdAndDelete(req.params.id)
+    res.json({"Success": "Note with this id has been Deleted", note:note})        
+} catch (error) {
+    console.error(error.message)
+    res.status(500).send("Internal Server Error")  
 }
 })
 module.exports = router
