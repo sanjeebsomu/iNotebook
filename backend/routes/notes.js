@@ -5,13 +5,14 @@ const fetchuser = require('../middleware/fetchuser')
 const { body, validationResult } = require('express-validator');
 
 
+
 //Route 1: Get All Notes: GET "/api/notes/fetchallnotes". login Required.
-router.post('/fetchallnotes',fetchuser, async (req, res)=> {
+router.get('/fetchallnotes',fetchuser, async (req, res)=> {
     let note = await Note.find({user: req.user.id})//where user is same as requested user
     res.json(note)
 })
 
-//Route 2: Add a new Note: GET "/api/notes/addnote". login Required.
+//Route 2: Add a new Note: POST "/api/notes/addnote". login Required.
 router.post('/addnote',fetchuser, [
     body('title', 'Title must be of atleast 3 charecters').isLength({ min: 3 }),
     body('description', 'description must be of atleast 5 charecters').isLength({ min: 5 })
