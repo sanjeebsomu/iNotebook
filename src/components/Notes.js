@@ -5,26 +5,31 @@ import NoteItem from './NoteItem';
 
 const Notes = () => {
     const context = useContext(NoteContext)
-    const {notes, getNotes} = context;//notes and getNotes ke andar context ke notes aa jayenge{destrauctering}
+    const {notes, getNotes, editNote} = context;//notes and getNotes ke andar context ke notes aa jayenge{destrauctering}
     useEffect(() => {
       getNotes()
       // eslint-disable-next-line
     }, [])
-    const [note, setNote] = useState({etitle: "", edescription: "", etag: ""})
+    const [note, setNote] = useState({id:"", etitle: "", edescription: "", etag: ""})
+
+    const ref = useRef(null)
+    const refClose = useRef(null)
 
     const updateNote=(currentNote)=>{
       ref.current.click()
-      setNote({etitle: currentNote.title, edescription: currentNote.description, etag: currentNote.tag })
+      setNote({id: currentNote._id, etitle: currentNote.title, edescription: currentNote.description, etag: currentNote.tag })
+      //update karisarila pare ya value sabu note bhitaraku jiba, and note bhitare jou etitle, edesc, etag achhi, se sabu modals ra value bhitaraku jiba.
     }
-    const ref = useRef(null)
 
     const onChange=(e)=>{
       setNote({...note, [e.target.name]: e.target.value})
   }
   const handleClick=(e)=>{
       e.preventDefault(); 
-      console.log("The note is now updated", note);
-  }
+      editNote(note.id, note.etitle, note.edescription, note.etag);//edited title, description, tag
+      refClose.current.click();
+
+    }
   return (
     <>
           <button type="button" className="btn btn-primary d-none" data-bs-toggle="modal" data-bs-target="#exampleModal" ref={ref}>
@@ -41,11 +46,11 @@ const Notes = () => {
               <form className="my-3">
                 <div className="mb-3">
                     <label htmlFor="etitle" className="form-label"> Title</label>
-                    <input type="text" value={note.etitle} className="form-control" id="etitle" name="etitle" aria-describedby="emailHelp" onChange={onChange}/>
+                    <input type="text" value={note.etitle} className="form-control" id="etitle" name="etitle" aria-describedby="emailHelp" onChange={onChange} minLength={5} required/>
                 </div>
                 <div className="mb-3">
                     <label htmlFor="edescription" className="form-label">Description</label>
-                    <input type="text" value={note.edescription} className="form-control" id="edescription" name="edescription"  onChange={onChange}/>
+                    <input type="text" value={note.edescription} className="form-control" id="edescription" name="edescription"  onChange={onChange} minLength={5} required/>
                 </div> 
                 <div className="mb-3">
                     <label htmlFor="etag" className="form-label">Tag</label>
@@ -54,14 +59,16 @@ const Notes = () => {
              </form>
             </div>
             <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button onClick={handleClick} type="button" className="btn btn-primary" data-bs-dismiss="modal">Save</button>            </div>
+              <button ref={refClose} type="button" className="btn btn-secondary d-none" data-bs-dismiss="modal">Close</button>
+              <button disabled={note.etitle.length<5 || note.edescription.length<5} onClick={handleClick} type="button" className="btn btn-primary" data-bs-dismiss="modal">Save</button></div>
           </div>
         </div>
       </div>
     <AddNote/>
     <div className="row my-3">
       <h2>Your Saved Notes</h2>
+      <div className="container">
+      {notes.length ===0 && 'No Notes To Display'}</div>
       {notes.map((note) => {
         return <NoteItem note={note} updateNote={updateNote} key = {note._id}/>//passing the props to the note item
       })}

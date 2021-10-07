@@ -4,7 +4,7 @@ import NoteContext from '../context/notes/NoteContext';
 
 const NoteItem = (props) => {
     const context = useContext(NoteContext)
-    const {deleteNote, editNote} = context;//destructering delete note function from context
+    const {deleteNote} = context;//destructering delete note function from context
     const {note, updateNote}=props;//Let's note is equal to props(what we recive from the props). destracturing(reciving notes as props and store it into note variable
     return (
         <div className="col-md-3">
