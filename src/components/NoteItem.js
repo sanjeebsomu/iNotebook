@@ -14,7 +14,7 @@ const NoteItem = (props) => {
                 <div className="d-flex align-items-center">
                 <h5 className="card-title">{note.title}</h5>
                 {/* here we dont have to do {props.note.title}, just for we declared props into note variable, we dont need to write props here */}
-                <i className="far fa-trash-alt mx-2" onClick={()=>{deleteNote(note._id)}}></i>
+                <i className="far fa-trash-alt mx-2" onClick={()=>{deleteNote(note._id); props.showAlert('This Note has been Deleted', 'success')}}></i>
                 {/* i put arrow function inside onclick delete, because i wanna pass a argurment(id) */}
                 <i className="far fa-edit mx-2" onClick={()=>{updateNote(note)}}></i>
                 </div>

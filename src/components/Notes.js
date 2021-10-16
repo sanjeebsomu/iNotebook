@@ -3,7 +3,7 @@ import NoteContext from '../context/notes/NoteContext';
 import AddNote from './AddNote';
 import NoteItem from './NoteItem';
 
-const Notes = () => {
+const Notes = (props) => {
     const context = useContext(NoteContext)
     const {notes, getNotes, editNote} = context;//notes and getNotes ke andar context ke notes aa jayenge{destrauctering}
     useEffect(() => {
@@ -19,6 +19,7 @@ const Notes = () => {
       ref.current.click()
       setNote({id: currentNote._id, etitle: currentNote.title, edescription: currentNote.description, etag: currentNote.tag })
       //update karisarila pare ya value sabu note bhitaraku jiba, and note bhitare jou etitle, edesc, etag achhi, se sabu modals ra value bhitaraku jiba.
+      
     }
 
     const onChange=(e)=>{
@@ -28,10 +29,11 @@ const Notes = () => {
       e.preventDefault(); 
       editNote(note.id, note.etitle, note.edescription, note.etag);//edited title, description, tag
       refClose.current.click();
-
+      props.showAlert('This Note has been Updated', 'success')
     }
   return (
     <>
+    <AddNote showAlert={props.showAlert}/>
           <button type="button" className="btn btn-primary d-none" data-bs-toggle="modal" data-bs-target="#exampleModal" ref={ref}>
             Edit Note
           </button>
@@ -64,13 +66,12 @@ const Notes = () => {
           </div>
         </div>
       </div>
-    <AddNote/>
     <div className="row my-3">
       <h2>Your Saved Notes</h2>
       <div className="container">
       {notes.length ===0 && 'No Notes To Display'}</div>
       {notes.map((note) => {
-        return <NoteItem note={note} updateNote={updateNote} key = {note._id}/>//passing the props to the note item
+        return <NoteItem note={note} updateNote={updateNote} key = {note._id} showAlert={props.showAlert}/>//passing the props to the note item
       })}
     </div>
     </>

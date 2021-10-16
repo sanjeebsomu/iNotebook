@@ -2,7 +2,7 @@ import React, {useContext, useState} from 'react'
 import NoteContext from '../context/notes/NoteContext';
 
 
-const AddNote = () => {
+const AddNote = (props) => {
     const context = useContext(NoteContext)
     const {addNote} = context;//add note(function) context is from NoteState.js
     
@@ -15,6 +15,7 @@ const AddNote = () => {
         e.preventDefault(); 
         addNote(note.title, note.description, note.tag)//this add note function is from NoteState.js
         setNote({title: "", description: "", tag: ""})
+        props.showAlert('Note Added Successfully', 'success');
     }
     return (
         <div>
