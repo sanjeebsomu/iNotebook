@@ -14,10 +14,11 @@ router.post('/createuser', [
     body('email', 'Enter a valid Email address').isEmail(),
     body('password', 'Password must contains atleast 5 charecters').isLength({ min: 5 }),
 ], async(req, res)=> {
+  let success = false;
   //If there are errors, return Bad request and the errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({success, errors: errors.array() });
     }
     try {//we are wrapping this code inside try and catch
       
@@ -25,7 +26,7 @@ router.post('/createuser', [
     let user = await User.findOne({email: req.body.email})
     if(user){
       //if user jas not the unique email, then return this error
-      return res.status(400).json({error: "sorry a user with this email is already exists"})
+      return res.status(400).json({success, error: "sorry a user with this email is already exists"})
     }
     salt = await bcrypt.genSalt(10)
     secPass = await bcrypt.hash(req.body.password, salt)
@@ -42,7 +43,8 @@ router.post('/createuser', [
       }
       const authToken = jwt.sign(data, JWT_SECRET);
 // res.json(user)
-res.json({authToken})
+let success = true;
+res.json({success, authToken})
       
 } catch (error) {
       console.error(error.message)
@@ -73,7 +75,8 @@ router.post('/login', [
     //now comparing password(use await, otherwise it will go to the next step without authorization and give them token)
     const passwordCompare = await bcrypt.compare(password, user.password)
     if(!passwordCompare){
-      return res.status(400).json({error: "Please Login with Correct Credential"})
+      success=false;
+      return res.status(400).json({success, error: "Please Login with Correct Credential"})
     }
 
     //if all the credential matched then send the user data
@@ -84,7 +87,8 @@ router.post('/login', [
     }
     const authToken = jwt.sign(data, JWT_SECRET);
 // res.json(user)
-res.json({authToken})
+success=true;
+res.json({success, authToken})
   } catch (error) {
     console.error(error.message)
     res.status(500).send("Internal Server Error")//it will display inside response
