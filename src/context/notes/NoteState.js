@@ -13,7 +13,7 @@ const NoteState = (props) =>{
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
-              'auth-token':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjE1NjkwODFlYTJhZmUzYmZiODQ1MzI4In0sImlhdCI6MTYzMzA2MzA3M30.iaNdWYzyQk-yfcVKnh84o1wNfQIKhDShsmnxjPGgGX4'
+              'auth-token':localStorage.getItem('token')
             },
           });
           const json = await response.json()
@@ -26,7 +26,7 @@ const NoteState = (props) =>{
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'auth-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjE1NjkwODFlYTJhZmUzYmZiODQ1MzI4In0sImlhdCI6MTYzMzA2MzA3M30.iaNdWYzyQk-yfcVKnh84o1wNfQIKhDShsmnxjPGgGX4'
+              'auth-token': localStorage.getItem('token')
             },
         
             body: JSON.stringify({title, description, tag})
@@ -41,12 +41,13 @@ const NoteState = (props) =>{
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
-            'auth-token':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjE1NjkwODFlYTJhZmUzYmZiODQ1MzI4In0sImlhdCI6MTYzMzA2MzA3M30.iaNdWYzyQk-yfcVKnh84o1wNfQIKhDShsmnxjPGgGX4'
+            'auth-token':localStorage.getItem('token')
           },
       
           body: JSON.stringify({title, description, tag})
         });
-        const json = await response.json();      
+        const json = await response.json();  
+        console.log(json);    
         let newNotes = JSON.parse(JSON.stringify(notes))//deep copying, because simple js object can't change its state in react (frontend)
         //this for loop is for to indentify index of the note to be edited.
         for (let index = 0; index < newNotes.length; index++) {
@@ -68,10 +69,11 @@ const NoteState = (props) =>{
                   method: 'DELETE',
                   headers: {
                     'Content-Type': 'application/json',
-                    'auth-token':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjE1NjkwODFlYTJhZmUzYmZiODQ1MzI4In0sImlhdCI6MTYzMzA2MzA3M30.iaNdWYzyQk-yfcVKnh84o1wNfQIKhDShsmnxjPGgGX4'
+                    'auth-token':localStorage.getItem('token')
                   },       
                 });
                 const json = await response.json();
+                console.log(json);
         const newNote = notes.filter((note)=>{return note._id !== id})//which id is not same as the provided id, store them all.
         setNotes(newNote)
       }
